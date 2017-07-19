@@ -72,6 +72,14 @@ EthernetClient client;
 
 RGBMoodLifx LIFXBulb(redPin, greenPin, bluePin);
 
+void processRequest(byte *, int, LifxPacket &);
+void handleRequest(LifxPacket &);
+void sendPacket(LifxPacket &);
+unsigned int sendUDPPacket(LifxPacket &);
+unsigned int sendTCPPacket(LifxPacket &);
+void printLifxPacket(LifxPacket &);
+void setLight();
+
 void setup() {
 
   Serial.begin(38400);
