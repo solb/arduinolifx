@@ -2,7 +2,7 @@
 
 // Dim curve
 // Used to make 'dimming' look more natural. 
-uint8_t dc[256] = {
+uint8_t sc[256] = {
     0,   1,   1,   2,   2,   2,   2,   2,   2,   3,   3,   3,   3,   3,   3,   3,
     3,   3,   3,   3,   3,   3,   3,   4,   4,   4,   4,   4,   4,   4,   4,   4,
     4,   4,   4,   5,   5,   5,   5,   5,   5,   5,   5,   5,   5,   6,   6,   6,
@@ -20,6 +20,10 @@ uint8_t dc[256] = {
     146, 149, 151, 154, 157, 159, 162, 165, 168, 171, 174, 177, 180, 183, 186, 190,
     193, 196, 200, 203, 207, 211, 214, 218, 222, 226, 230, 234, 238, 242, 248, 255,
 };
+
+static inline uint8_t dc(uint16_t in) {
+	return in - in / 128;
+}
 
 // Constructor. Start with leds off.
 RGBMoodLifx::RGBMoodLifx(uint8_t rp, uint8_t gp, uint8_t bp)
@@ -193,8 +197,8 @@ This function is used internally but may be used by the end user too. (public).
 @param b The brightness (0..255)
 */
 void RGBMoodLifx::hsb2rgb(uint16_t hue, uint16_t sat, uint16_t val, uint16_t& red, uint16_t& green, uint16_t& blue) {
-  val = dc[val];
-  sat = 255-dc[255-sat];
+  val = dc(val);
+  sat = 255-sc[255-sat];
   hue = hue % 360;
 
   int r;
