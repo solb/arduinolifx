@@ -78,7 +78,7 @@ void sendPacket(LifxPacket &);
 unsigned int sendUDPPacket(LifxPacket &);
 unsigned int sendTCPPacket(LifxPacket &);
 void printLifxPacket(LifxPacket &);
-void setLight();
+void setLight(bool);
 
 void setup() {
 
@@ -190,7 +190,7 @@ void setup() {
   }
 
   // set the bulb based on the initial colors
-  setLight();
+  setLight(true);
 }
 
 void loop() {
@@ -351,7 +351,7 @@ void handleRequest(LifxPacket &request) {
       bri = word(request.data[6], request.data[5]);
       kel = word(request.data[8], request.data[7]);
 
-      setLight();
+      setLight(false);
     } 
     break;
 
@@ -431,7 +431,7 @@ void handleRequest(LifxPacket &request) {
       // set if we are setting
       if(request.packet_type == SET_POWER_STATE) {
         power_status = word(request.data[1], request.data[0]);
-        setLight();
+        setLight(true);
       }
 
       // respond to both get and set commands
@@ -860,7 +860,7 @@ void printLifxPacket(LifxPacket &pkt) {
   }
 }
 
-void setLight() {
+void setLight(bool fade) {
   if(DEBUG) {
     Serial.print(F("Set light - "));
     Serial.print(F("hue: "));
@@ -896,7 +896,10 @@ void setLight() {
       this_sat = map(kelvin_hsv.s*1000, 0, 1000, 0, 255); //multiply the sat by 1000 so we can map the percentage value returned by rgb2hsv
     }
 
-    LIFXBulb.fadeHSB(this_hue, this_sat, this_bri);
+    if(fade)
+      LIFXBulb.fadeHSB(this_hue, this_sat, this_bri);
+    else
+      LIFXBulb.setHSB(this_hue, this_sat, this_bri);
   } 
   else {
     LIFXBulb.fadeHSB(0, 0, 0);
